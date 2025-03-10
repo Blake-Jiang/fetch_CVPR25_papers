@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CVPR Paper Search Results</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .container {
+            max-width: 1200px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #343a40;
+            font-weight: 600;
+        }
+        .search-info {
+            background-color: #e7f3fe;
+            border-left: 6px solid #2196F3;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .table {
+            font-size: 0.9rem;
+        }
+        .table th {
+            background-color: #4361ee;
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+        .table-responsive {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .btn-back {
+            margin-bottom: 20px;
+        }
+        .export-options {
+            margin-bottom: 20px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        .link-icon {
+            margin-right: 5px;
+        }
+        .no-results {
+            text-align: center;
+            padding: 50px;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>CVPR Paper Search Results</h1>
+        </div>
+
+        <a href="/" class="btn btn-outline-primary btn-back">
+            <i class="bi bi-arrow-left"></i> Back to Search
+        </a>
+
+        <div class="search-info">
+            <h5>Search Information</h5>
+            <p><strong>Total papers found:</strong> {{ total }}</p>
+            <p><strong>Keywords:</strong> {% if keywords %}{{ keywords|join(', ') }}{% else %}None{% endif %}</p>
+            <p><strong>Search time:</strong> {{ current_time }}</p>
+        </div>
+
+        <div class="export-options">
+            <h5>Export Results</h5>
+            <div class="btn-group">
+                <a href="/fetch?output_format=csv" class="btn btn-outline-secondary">
+                    <i class="bi bi-file-earmark-spreadsheet"></i> CSV
+                </a>
+                <a href="/fetch?output_format=excel" class="btn btn-outline-secondary">
+                    <i class="bi bi-file-earmark-excel"></i> Excel
+                </a>
+                <a href="/fetch?output_format=markdown" class="btn btn-outline-secondary">
+                    <i class="bi bi-markdown"></i> Markdown
+                </a>
+            </div>
+        </div>
+
+        {% if results %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>CVPR Title</th>
+                        <th>CVPR Authors</th>
+                        <th>arXiv Link</th>
+                        <th>PDF Link</th>
+                        <th>arXiv Title</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in results %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ result['CVPR Title'] }}</td>
+                        <td>{{ result['CVPR Authors'] }}</td>
+                        <td>
+                            {% if result['arXiv Link'] != 'Not Found' %}
+                            <a href="{{ result['arXiv Link'] }}" target="_blank">
+                                <i class="bi bi-link-45deg link-icon"></i>Link
+                            </a>
+                            {% else %}
+                            Not Found
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if result['PDF Link'] != 'Not Found' %}
+                            <a href="{{ result['PDF Link'] }}" target="_blank">
+                                <i class="bi bi-file-earmark-pdf link-icon"></i>PDF
+                            </a>
+                            {% else %}
+                            Not Found
+                            {% endif %}
+                        </td>
+                        <td>{{ result['arXiv Title'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="no-results">
+            <i class="bi bi-search" style="font-size: 3rem;"></i>
+            <h3>No Results Found</h3>
+            <p>Try different keywords or check the CVPR URL.</p>
+        </div>
+        {% endif %}
+
+        <div class="footer">
+            <p>Generated by CVPR Paper Finder</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
